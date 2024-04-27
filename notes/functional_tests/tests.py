@@ -3,8 +3,8 @@ from selenium.webdriver.common.keys import Keys
 import time
 import unittest
 from selenium.webdriver.common.by import By
-
-class NewVisitorTest(unittest.TestCase):
+from django.test import LiveServerTestCase
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Chrome()
@@ -18,7 +18,7 @@ class NewVisitorTest(unittest.TestCase):
     def test_can_start_a_list_and_retrieve_it_later(self):
         # 新访客访问网站的首页
         # 他听说这是一个很酷的待办事项应用
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # 他注意到网页的标题和头部都包含“To-Do”这个词
         self.assertIn('To-Do', self.browser.title)
@@ -57,5 +57,4 @@ class NewVisitorTest(unittest.TestCase):
 
 
 
-if __name__ == '__main__':
-    unittest.main()
+
