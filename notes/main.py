@@ -46,7 +46,7 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(1)
 
         self.check_for_row_in_list_table('1:Buy flowers')
-        self.check_for_row_in_list_table('2: Give a gift to Lisi')
+        self.check_for_row_in_list_table('2:Give a gift to Lisi')
 
         # 页面中又显示了一个文本框，可以输入其他的事项
         # 他输入了“Use peacock feathers to make a fly"
