@@ -99,5 +99,4 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotIn('Buy flowers',page_text)
         self.assertIn('Buy milk',page_text)
         # 两个用户都很满意
-        self.fail('Finish the test!')
 
