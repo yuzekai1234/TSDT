@@ -4,6 +4,8 @@ import time
 import unittest
 from selenium.webdriver.common.by import By
 from django.test import LiveServerTestCase
+from selenium.common.exceptions import WebDriverException
+Max_wait=10
 class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
@@ -11,10 +13,19 @@ class NewVisitorTest(LiveServerTestCase):
 
     def tearDown(self):
         self.browser.quit()
-    def check_for_row_in_list_table(self,row_text):
-        table=self.browser.find_element(By.ID,'id_list_table')
-        rows=table.find_elements(By.TAG_NAME,'tr')
-        self.assertIn(row_text,[row.text for row in rows])
+    def wait_for_row_in_list_table(self,row_text):
+        start_time=time.time()
+        while True:
+            try:
+                table=self.browser.find_element(By.ID,'id_list_table')
+                rows=table.find_elements(By.TAG_NAME,'tr')
+                self.assertIn(row_text,[row.text for row in rows])
+                return
+            except(AssertionError,WebDriverException) as e:
+                if time.time()-start_time>Max_wait:
+                    raise e
+                time.sleep(0.5)
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         # 新访客访问网站的首页
         # 他听说这是一个很酷的待办事项应用
@@ -38,15 +49,15 @@ class NewVisitorTest(LiveServerTestCase):
         # 他按下回车键后页面更新了
         # 待办事项表格中显示了“1: Buy flowers"
         inputbox.send_keys(Keys.ENTER)
-        self.check_for_row_in_list_table('1:Buy flowers')
+        self.wait_for_row_in_list_table('1:Buy flowers')
 
         inputbox = self.browser.find_element(By.ID, 'id_new_item')
         inputbox.send_keys('Give a gift to Lisi')
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
 
-        self.check_for_row_in_list_table('1:Buy flowers')
-        self.check_for_row_in_list_table('2:Give a gift to Lisi')
+        self.wait_for_row_in_list_table('1:Buy flowers')
+        self.wait_for_row_in_list_table('2:Give a gift to Lisi')
 
         # 页面中又显示了一个文本框，可以输入其他的事项
         # 他输入了“Use peacock feathers to make a fly"
